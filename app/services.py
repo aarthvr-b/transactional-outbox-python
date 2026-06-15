@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from uuid import uuid4
 
 
 from app.models import Order
@@ -13,8 +14,12 @@ class OrderService:
         self.outbox = OutboxRepository(session)
 
     def create_order(self, command: CreateOrderCommand) -> Order:
+        order_id = str(uuid4())
+
         order = Order(
-            customer_email=command.customer_email, total_amount=command.total_amount
+            id=order_id,
+            customer_email=command.customer_email,
+            total_amount=command.total_amount,
         )
 
         self.orders.add(order)
